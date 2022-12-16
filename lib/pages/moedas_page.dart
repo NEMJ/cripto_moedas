@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import '../models/moeda.dart';
 import '../repositories/moeda_repository.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter/material.dart';
+import './moeda_detalhes_page.dart';
+
 
 class MoedasPage extends StatefulWidget {
   const MoedasPage({ Key? key }) : super(key: key);
@@ -45,6 +47,15 @@ class _MoedasPageState extends State<MoedasPage> {
     }
   }
 
+  mostrarDetalhes(Moeda moeda) {
+    Navigator.push(
+      context, 
+      MaterialPageRoute(
+        builder: (_) => MoedaDetalhesPage(moeda: moeda),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +95,8 @@ class _MoedasPageState extends State<MoedasPage> {
                   ? selecionadas.remove(tabela[moeda])
                   : selecionadas.add(tabela[moeda]);
               });
-            }
+            },
+            onTap: () => mostrarDetalhes(tabela[moeda]),
           );
         },
       ),
