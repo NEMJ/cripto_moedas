@@ -25,7 +25,7 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
       Navigator.pop(context);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Compra realizada com sucesso!')),
+        const SnackBar(content: Text('Compra realizada com sucesso!')),
       );
     }
   }
@@ -68,7 +68,7 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
             ? SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Container(
-                margin:  EdgeInsets.only(bottom: 24),
+                margin: const EdgeInsets.only(bottom: 24),
                 // padding: EdgeInsets.all(12),
                 alignment: Alignment.center,
                 // decoration: BoxDecoration(
@@ -76,7 +76,7 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
                 // ),
                 child: Text(
                   '$quantidade ${widget.moeda.sigla}',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     color: Colors.teal,
                   ),
@@ -84,7 +84,7 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
               ),
             )
             : Container(
-              margin: EdgeInsets.only(bottom: 24),
+              margin: const EdgeInsets.only(bottom: 24),
             ),
             Form(
               key: _form,
@@ -121,12 +121,12 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
             ),
             Container(
               alignment: Alignment.bottomCenter,
-              margin: EdgeInsets.only(top: 24),
+              margin: const EdgeInsets.only(top: 24),
               child: ElevatedButton(
                 onPressed: comprar,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.check),
                     Padding(
                       padding: EdgeInsets.all(16),

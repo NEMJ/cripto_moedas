@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/moeda.dart';
+import '../repositories/favoritas_repository.dart';
 import '../repositories/moeda_repository.dart';
 import './moeda_detalhes_page.dart';
 
@@ -16,6 +18,7 @@ class _MoedasPageState extends State<MoedasPage> {
   final tabela = MoedaRepository.tabela;
   NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
   List<Moeda> selecionadas = [];
+  late FavoritasRepository favoritas;
 
   appBarDinamica() {
     if(selecionadas.isEmpty) {
@@ -28,11 +31,7 @@ class _MoedasPageState extends State<MoedasPage> {
         centerTitle: true,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            setState(() {
-              selecionadas = [];
-            });
-          }
+          onPressed: () => limparSelecionadas(),
         ),
         title: Text('${selecionadas.length} selecionadas'),
         backgroundColor: Colors.blueGrey[50],
@@ -56,8 +55,20 @@ class _MoedasPageState extends State<MoedasPage> {
     );
   }
 
+  limparSelecionadas() {
+    setState(() {
+      selecionadas = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Instancia 'padrão' do Provider
+    // >>- favoritas = Provider.of<FavoritasRepository>(context);
+
+    // Utiliza o context do build com 'watch' para esperar por mudanças e as usar de forma realiva.
+    favoritas = context.watch<FavoritasRepository>();
+
     return Scaffold(
       appBar: appBarDinamica(),
       body: ListView.separated(
@@ -77,15 +88,22 @@ class _MoedasPageState extends State<MoedasPage> {
                 width: 40,
                 child: Image.asset(tabela[moeda].icone),
               ),
-            title: Text(
-              tabela[moeda].nome,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w500,
-              ),
+            title: Row(
+              children: [
+                Text(
+                  tabela[moeda].nome,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                if(favoritas.lista.contains(tabela[moeda]))
+                  const Icon(Icons.circle, color: Colors.amber, size: 8),
+              ],
             ),
             trailing: Text(
               real.format(tabela[moeda].preco),
+              style: const TextStyle(fontSize: 15),
             ),
             selected: selecionadas.contains(tabela[moeda]),
             selectedTileColor: Colors.indigo[50],
@@ -111,7 +129,10 @@ class _MoedasPageState extends State<MoedasPage> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        onPressed: () {}
+        onPressed: () {
+          favoritas.saveAll(selecionadas);
+          limparSelecionadas();
+        }
       )
       : null,
     );
