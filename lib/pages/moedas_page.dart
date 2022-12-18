@@ -1,3 +1,4 @@
+import 'package:cripto_moedas/configs/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,11 +15,24 @@ class MoedasPage extends StatefulWidget {
   State<MoedasPage> createState() => _MoedasPageState();
 }
 
+12:53
+
 class _MoedasPageState extends State<MoedasPage> {
   final tabela = MoedaRepository.tabela;
-  NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  late NumberFormat real;
+  late Map<String, String> loc;
   List<Moeda> selecionadas = [];
   late FavoritasRepository favoritas;
+
+  // Lê e altera a forma de exibição dos valores das moedas
+  readNumberFormat() {
+    loc = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
+  }
+
+  changeLanguageButton() {
+
+  }
 
   appBarDinamica() {
     if(selecionadas.isEmpty) {
