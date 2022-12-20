@@ -15,8 +15,6 @@ class MoedasPage extends StatefulWidget {
   State<MoedasPage> createState() => _MoedasPageState();
 }
 
-12:53
-
 class _MoedasPageState extends State<MoedasPage> {
   final tabela = MoedaRepository.tabela;
   late NumberFormat real;
@@ -31,7 +29,24 @@ class _MoedasPageState extends State<MoedasPage> {
   }
 
   changeLanguageButton() {
+    final locale = loc['locale'] == 'pt_BR' ? 'en_US' : 'pt_BR';
+    final name = loc['locale'] == 'pt_BR' ? '\$' : 'R\$';
 
+    return PopupMenuButton(
+      icon: Icon(Icons.language),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          child: ListTile(
+            leading: Icon(Icons.swap_vert),
+            title: Text('Usar $locale'),
+            onTap: () {
+              context.read<AppSettings>().setLocale(locale, name);
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ]
+    );
   }
 
   appBarDinamica() {
@@ -39,6 +54,9 @@ class _MoedasPageState extends State<MoedasPage> {
       return AppBar(
         centerTitle: true,
         title: const Text('Cripto Moedas'),
+        actions: [
+          changeLanguageButton(),
+        ],
       );
     } else {
       return AppBar(
@@ -82,6 +100,7 @@ class _MoedasPageState extends State<MoedasPage> {
 
     // Utiliza o context do build com 'watch' para esperar por mudanças e as usar de forma realiva.
     favoritas = context.watch<FavoritasRepository>();
+    readNumberFormat();
 
     return Scaffold(
       appBar: appBarDinamica(),
