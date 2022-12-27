@@ -1,6 +1,8 @@
+import 'package:cripto_moedas/configs/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import '../models/moeda.dart';
 
 class MoedaDetalhesPage extends StatefulWidget {
@@ -13,10 +15,15 @@ class MoedaDetalhesPage extends StatefulWidget {
 }
 
 class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
-  NumberFormat real = NumberFormat.currency(locale: 'pt_BR', name: 'R\$');
+  late NumberFormat real;
   final _form = GlobalKey<FormState>(); // Inicializa ou instancia uma chave aleatória para o formulário
   final _valor = TextEditingController();
   double quantidade = 0;
+
+  readNumberFormat() {
+    final loc = context.watch<AppSettings>().locale;
+    real = NumberFormat.currency(locale: loc['locale'], name: loc['name']);
+  }
 
   comprar() {
     if(_form.currentState!.validate()) {
@@ -32,6 +39,8 @@ class _MoedaDetalhesPageState extends State<MoedaDetalhesPage> {
 
   @override
   Widget build(BuildContext context) {
+    readNumberFormat();
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,

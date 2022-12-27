@@ -3,8 +3,12 @@ import 'package:provider/provider.dart';
 import './pages/home_page.dart';
 import './repositories/favoritas_repository.dart';
 import './configs/app_settings.dart';
+import './configs/hive_config.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveConfig.start();
+
   runApp(
     // Fornecedor de dados para o child, que seria o aplicativo
     MultiProvider(
