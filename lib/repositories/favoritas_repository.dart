@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:collection';
 import 'package:hive/hive.dart';
-import '../apadters/moeda_hive_adapter.dart';
+import '../adapters/moeda_hive_adapter.dart';
 import '../models/moeda.dart';
 
 class FavoritasRepository extends ChangeNotifier {

@@ -4,6 +4,7 @@ import './pages/home_page.dart';
 import './repositories/favoritas_repository.dart';
 import './configs/app_settings.dart';
 import './configs/hive_config.dart';
+import './repositories/conta_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,6 +14,7 @@ void main() async {
     // Fornecedor de dados para o child, que seria o aplicativo
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (context) => ContaRepository()),
         ChangeNotifierProvider(create: (context) => AppSettings()),
         ChangeNotifierProvider(create: (context) => FavoritasRepository()),
       ],
