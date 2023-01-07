@@ -1,8 +1,9 @@
-import 'package:cripto_moedas/configs/app_settings.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import '../configs/app_settings.dart';
+import '../models/posicao.dart';
 import '../repositories/conta_repository.dart';
 
 class CarteiraPage extends StatefulWidget {
@@ -19,6 +20,9 @@ class _CarteiraPageState extends State<CarteiraPage> {
   late NumberFormat real;
   late ContaRepository conta;
 
+  String graficoLabel = '';
+  double graficoValor = 0;
+  List<Posicao> carteira = [];
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,53 @@ class _CarteiraPageState extends State<CarteiraPage> {
     });
   }
 
+  setGraficoDados(int index) {
+    if(index < 0) return;
+
+    if(index == carteira.length) {
+      graficoLabel = 'Saldo';
+      graficoValor = conta.saldo;
+    } else {
+      graficoLabel = carteira[index].moeda.nome;
+      graficoValor = carteira[index].moeda.preco * carteira[index].quantidade;
+    }
+  }
+
+  loadCarteira() {
+    setGraficoDados(index);
+    carteira = conta.carteira;
+    final tamanhoLista = carteira.length + 1;
+
+    return List.generate(tamanhoLista, (i) {
+      final isTouched = i == index;
+      final isSaldo = i == tamanhoLista - 1;
+      final fontSize = isTouched ? 18.0 : 14.0;
+      final radius = isTouched ? 60.0 : 50.0;
+      final color = isTouched ? Colors.tealAccent : Colors.tealAccent[400];
+
+      double porcentagem = 0;
+      if(!isSaldo) {
+        porcentagem =
+          carteira[i].moeda.preco * carteira[i].quantidade / totalCarteira;
+      } else {
+        porcentagem = (conta.saldo > 0) ? conta.saldo / totalCarteira : 0;
+      }
+      porcentagem *= 100;
+
+      return PieChartSectionData(
+        color: color,
+        value: porcentagem,
+        title: '${porcentagem.toStringAsFixed(0)}%',
+        radius: radius,
+        titleStyle: TextStyle(
+          fontSize: fontSize,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87
+        ),
+      );
+    });
+  }
+
   loadGrafico() {
     return  (conta.saldo <= 0)
     ? Container(
@@ -85,14 +136,32 @@ class _CarteiraPageState extends State<CarteiraPage> {
             PieChartData(
               sectionsSpace: 5,
               centerSpaceRadius: 110,
-              // sections: loadCarteira(),
+              sections: loadCarteira(),
               pieTouchData: PieTouchData(
                 touchCallback: (touch) => setState(() {
                   index = touch.touchedSection!.touchedSectionIndex;
+                  setGraficoDados(index);
                 })
               ),
             ),
           ),
+        ),
+        Column(
+          children: [
+            Text(
+              graficoLabel,
+              style: const TextStyle(
+                fontSize: 20,
+                color: Colors.teal,
+              ),
+            ),
+            Text(
+              real.format(graficoValor),
+              style: const TextStyle(
+                fontSize: 28,
+              ),
+            ),
+          ],
         ),
       ],
     );
